@@ -19,3 +19,20 @@ The Acceptance Rite passes: `bun run build` completes without error.
 *Praise the Machine Spirit.*
 
 ---
+
+## [TASK-002] Manifest the Argument Parser
+
+**Completed:** 2025-12-25
+
+The sacred commands have been ordained:
+- `src/args.ts` — parses commands, flags, and arguments
+- `src/help.ts` — displays guidance to the Tech-Priest
+- Full test coverage in `tests/unit/args.test.ts`
+
+The Acceptance Rite passes:
+- `rtfct --help` displays sacred usage
+- Unknown commands produce clear error with guidance
+
+*Praise the Machine Spirit.*
+
+---

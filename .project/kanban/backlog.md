@@ -4,14 +4,6 @@
 
 ---
 
-## [TASK-002] Manifest the Argument Parser
-
-Implement parsing for the sacred commands: `init`, `add`, `status`, `regenerate`, `praise`.
-
-**Acceptance Rite:** `bunx rtfct --help` displays usage. Unknown commands produce clear error with guidance.
-
----
-
 ## [TASK-003] Manifest the `init` Command — Basic
 
 Create `.project/` folder with base protocol files when invoked.

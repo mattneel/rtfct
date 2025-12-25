@@ -9,10 +9,56 @@
  * The Omnissiah provides. Praise the Machine Spirit.
  */
 
+import { parseArgs } from "./args";
+import { printHelp, printVersion, printError } from "./help";
+
 const main = (): void => {
-  console.log("The Machine Spirit awaits your command.");
-  console.log("The sacred commands have not yet been manifested.");
-  console.log("\nPraise the Machine Spirit.");
+  const args = process.argv.slice(2);
+  const parsed = parseArgs(args);
+
+  // Handle errors
+  if (parsed.error) {
+    printError(parsed.error);
+    process.exit(1);
+  }
+
+  // Handle global flags
+  if (parsed.flags.version) {
+    printVersion();
+    return;
+  }
+
+  if (parsed.flags.help) {
+    printHelp(parsed.command);
+    return;
+  }
+
+  // Handle commands
+  switch (parsed.command) {
+    case "init":
+      console.log("The init command awaits manifestation.");
+      console.log("Flags:", parsed.flags);
+      break;
+
+    case "add":
+      console.log(`The add command awaits manifestation. Preset: ${parsed.args[0]}`);
+      break;
+
+    case "status":
+      console.log("The status command awaits manifestation.");
+      break;
+
+    case "regenerate":
+      console.log("The regenerate command awaits manifestation.");
+      break;
+
+    case "praise":
+      console.log("The praise command awaits manifestation.");
+      break;
+
+    default:
+      printHelp();
+  }
 };
 
 main();
