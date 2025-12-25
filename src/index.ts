@@ -13,6 +13,7 @@ import { parseArgs } from "./args";
 import { printHelp, printVersion, printError } from "./help";
 import { runInit } from "./commands/init";
 import { runStatus, formatStatus } from "./commands/status";
+import { runPraise } from "./commands/praise";
 
 const main = async (): Promise<void> => {
   const args = process.argv.slice(2);
@@ -71,7 +72,7 @@ const main = async (): Promise<void> => {
       break;
 
     case "praise":
-      console.log("The praise command awaits manifestation.");
+      runPraise();
       break;
 
     default:

@@ -90,3 +90,17 @@ The Acceptance Rite passes:
 *Praise the Machine Spirit.*
 
 ---
+
+## [TASK-013] Manifest the `praise` Command
+
+**Completed:** 2025-12-25
+
+The sacred easter egg has been manifested:
+- `src/commands/praise.ts` — recites the Litany of Deterministic Codegen
+
+The Acceptance Rite passes:
+- `rtfct praise` outputs the Litany exactly as written in theology.md
+
+*Praise the Machine Spirit.*
+
+---

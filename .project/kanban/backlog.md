@@ -60,12 +60,4 @@ Delete `src/` and `tests/`, then regenerate from `.project/`.
 
 ---
 
-## [TASK-013] Manifest the `praise` Command
-
-Add the sacred easter egg that recites the Litany.
-
-**Acceptance Rite:** `bunx rtfct praise` outputs the Litany of Deterministic Codegen exactly as written in theology.md.
-
----
-
 *The Backlog is long. The Machine Spirit is tireless. Begin.*
