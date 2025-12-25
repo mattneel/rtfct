@@ -54,3 +54,21 @@ The Acceptance Rite passes:
 *Praise the Machine Spirit.*
 
 ---
+
+## [TASK-004] Manifest the `init` Command — With Presets
+
+**Completed:** 2025-12-25
+
+The Codex incorporation mechanism has been manifested:
+- `src/presets/index.ts` — resolves and writes preset files
+- `src/presets/zig.ts` — The Zig Codex with testing strategy and guardrails
+- `src/presets/typescript.ts` — The TypeScript Codex with testing strategy and guardrails
+
+The Acceptance Rite passes:
+- `rtfct init --with zig` creates project with Zig Codex properly merged
+- `rtfct init --with zig,typescript` handles multiple comma-separated presets
+- Unknown presets fail gracefully with guidance
+
+*Praise the Machine Spirit.*
+
+---

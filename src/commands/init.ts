@@ -14,10 +14,12 @@ import {
   IN_PROGRESS_MD,
   DONE_MD,
 } from "../templates";
+import { resolvePreset, writePreset, type Preset } from "../presets";
 
-interface InitResult {
+export interface InitResult {
   success: boolean;
   error?: string;
+  presets?: string[];
 }
 
 const exists = async (path: string): Promise<boolean> => {
@@ -38,6 +40,18 @@ export const runInit = async (
   flags: ParsedFlags
 ): Promise<InitResult> => {
   const projectDir = join(cwd, ".project");
+
+  // Resolve presets first (fail fast if any are invalid)
+  const presets: Preset[] = [];
+  if (flags.with && flags.with.length > 0) {
+    for (const presetName of flags.with) {
+      const result = resolvePreset(presetName);
+      if (result.error) {
+        return { success: false, error: result.error };
+      }
+      presets.push(result.preset!);
+    }
+  }
 
   // Check if .project/ already exists
   if (await exists(projectDir)) {
@@ -83,5 +97,13 @@ export const runInit = async (
     await writeFile(join(cwd, filePath), content);
   }
 
-  return { success: true };
+  // Write presets
+  for (const preset of presets) {
+    await writePreset(cwd, preset);
+  }
+
+  return {
+    success: true,
+    presets: presets.map((p) => p.name),
+  };
 };

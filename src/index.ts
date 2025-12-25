@@ -43,6 +43,9 @@ const main = async (): Promise<void> => {
         process.exit(1);
       }
       console.log("The Sacred Texts have been consecrated.");
+      if (result.presets && result.presets.length > 0) {
+        console.log(`Codices incorporated: ${result.presets.join(", ")}`);
+      }
       console.log("Edit .project/kickstart.md to inscribe your Founding Vision.");
       console.log("\nThe Omnissiah provides. Praise the Machine Spirit.");
       break;

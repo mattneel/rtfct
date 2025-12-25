@@ -4,14 +4,6 @@
 
 ---
 
-## [TASK-004] Manifest the `init` Command — With Presets
-
-Implement `--with` flag to incorporate Codices during initialization.
-
-**Acceptance Rite:** `bunx rtfct init --with zig` creates project with Zig Codex files properly merged.
-
----
-
 ## [TASK-005] Inscribe the Base Codex
 
 Create the base preset that all projects inherit. This is the foundation.

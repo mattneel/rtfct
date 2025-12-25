@@ -123,4 +123,45 @@ describe("The init Command", () => {
       expect(result.stdout).toContain("consecrated");
     });
   });
+
+  describe("incorporation of Codices (--with flag)", () => {
+    test("creates preset directory for zig codex", async () => {
+      const result = await runCli(["init", "--with", "zig"], tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(await exists(join(tempDir, ".project/presets/zig"))).toBe(true);
+    });
+
+    test("copies zig codex manifest.json", async () => {
+      await runCli(["init", "--with", "zig"], tempDir);
+      expect(await exists(join(tempDir, ".project/presets/zig/manifest.json"))).toBe(true);
+    });
+
+    test("copies zig testing strategy", async () => {
+      await runCli(["init", "--with", "zig"], tempDir);
+      expect(await exists(join(tempDir, ".project/presets/zig/testing/strategy.md"))).toBe(true);
+    });
+
+    test("copies zig guardrails", async () => {
+      await runCli(["init", "--with", "zig"], tempDir);
+      expect(await exists(join(tempDir, ".project/presets/zig/guardrails.md"))).toBe(true);
+    });
+
+    test("handles multiple comma-separated presets", async () => {
+      const result = await runCli(["init", "--with", "zig,typescript"], tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(await exists(join(tempDir, ".project/presets/zig"))).toBe(true);
+      expect(await exists(join(tempDir, ".project/presets/typescript"))).toBe(true);
+    });
+
+    test("fails gracefully for unknown preset", async () => {
+      const result = await runCli(["init", "--with", "heretical-codex"], tempDir);
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toContain("heretical-codex");
+    });
+
+    test("displays incorporated codices in success message", async () => {
+      const result = await runCli(["init", "--with", "zig"], tempDir);
+      expect(result.stdout).toContain("zig");
+    });
+  });
 });
