@@ -4,7 +4,7 @@
 
 ---
 
-*No task is currently ordained. Select from the Backlog.*
+*No task currently ordained. Select from the Backlog.*
 
 ---
 

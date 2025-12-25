@@ -78,7 +78,7 @@ export const runInit = async (
   const presetErrors: string[] = [];
   if (options.presets && options.presets.length > 0) {
     for (const presetName of options.presets) {
-      const result = resolvePreset(presetName);
+      const result = await resolvePreset(presetName);
       if (result.success) {
         await writePreset(targetDir, result.preset);
       } else {

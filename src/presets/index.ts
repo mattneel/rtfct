@@ -11,6 +11,7 @@ import { BASE_PRESET } from "./base";
 import { ZIG_PRESET } from "./zig";
 import { TYPESCRIPT_PRESET } from "./typescript";
 import { ELIXIR_PRESET } from "./elixir";
+import { parseGitHubRef, resolveGitHubPreset } from "./github";
 
 export interface PresetFile {
   path: string;
@@ -33,6 +34,8 @@ export type ResolveResult =
   | { success: true; preset: Preset }
   | { success: false; error: string };
 
+export type AsyncResolveResult = Promise<ResolveResult>;
+
 type BuiltInPresetName = "base" | "zig" | "typescript" | "elixir";
 
 const BUILT_IN_PRESETS: Record<BuiltInPresetName, Preset> = {
@@ -46,10 +49,9 @@ const BUILT_IN_PRESETS: Record<BuiltInPresetName, Preset> = {
 export { BASE_PRESET } from "./base";
 
 /**
- * Resolve a preset name to a Preset object.
- * Currently only supports built-in presets.
+ * Resolve a preset name to a Preset object (synchronous, built-in only).
  */
-export const resolvePreset = (name: string): ResolveResult => {
+export const resolvePresetSync = (name: string): ResolveResult => {
   const lowerName = name.toLowerCase();
 
   if (lowerName in BUILT_IN_PRESETS) {
@@ -59,8 +61,28 @@ export const resolvePreset = (name: string): ResolveResult => {
     };
   }
 
-  // Future: Support local and GitHub presets
-  // Check local paths first (they also contain "/")
+  return {
+    success: false,
+    error: `Unknown built-in preset: ${name}. Available: base, zig, typescript, elixir`,
+  };
+};
+
+/**
+ * Resolve a preset name to a Preset object.
+ * Supports built-in presets, GitHub presets (owner/repo), and local presets.
+ */
+export const resolvePreset = async (name: string): AsyncResolveResult => {
+  const lowerName = name.toLowerCase();
+
+  // Check built-in presets first
+  if (lowerName in BUILT_IN_PRESETS) {
+    return {
+      success: true,
+      preset: BUILT_IN_PRESETS[lowerName as BuiltInPresetName],
+    };
+  }
+
+  // Check local paths (not yet supported)
   if (name.startsWith("./") || name.startsWith("/")) {
     return {
       success: false,
@@ -68,16 +90,21 @@ export const resolvePreset = (name: string): ResolveResult => {
     };
   }
 
+  // Check for GitHub preset format (owner/repo or owner/repo@branch)
   if (name.includes("/")) {
+    const ref = parseGitHubRef(name);
+    if (ref) {
+      return await resolveGitHubPreset(name);
+    }
     return {
       success: false,
-      error: `GitHub presets not yet supported: ${name}`,
+      error: `Invalid GitHub preset format: ${name}. Use "owner/repo" or "owner/repo@branch".`,
     };
   }
 
   return {
     success: false,
-    error: `Unknown preset: ${name}. Available: base, zig, typescript, elixir`,
+    error: `Unknown preset: ${name}. Available: base, zig, typescript, elixir, or use owner/repo for GitHub presets.`,
   };
 };
 

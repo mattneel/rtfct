@@ -7,6 +7,7 @@ import { mkdir, rm, stat } from "fs/promises";
 import { join } from "path";
 import {
   resolvePreset,
+  resolvePresetSync,
   writePreset,
   isPresetInstalled,
   BASE_PRESET,
@@ -14,10 +15,11 @@ import {
 import { ZIG_PRESET } from "../../src/presets/zig";
 import { TYPESCRIPT_PRESET } from "../../src/presets/typescript";
 import { ELIXIR_PRESET } from "../../src/presets/elixir";
+import { parseGitHubRef } from "../../src/presets/github";
 
-describe("resolvePreset", () => {
+describe("resolvePresetSync", () => {
   test("resolves base preset", () => {
-    const result = resolvePreset("base");
+    const result = resolvePresetSync("base");
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.preset.name).toBe("base");
@@ -25,7 +27,7 @@ describe("resolvePreset", () => {
   });
 
   test("resolves zig preset", () => {
-    const result = resolvePreset("zig");
+    const result = resolvePresetSync("zig");
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.preset.name).toBe("zig");
@@ -33,7 +35,7 @@ describe("resolvePreset", () => {
   });
 
   test("resolves typescript preset", () => {
-    const result = resolvePreset("typescript");
+    const result = resolvePresetSync("typescript");
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.preset.name).toBe("typescript");
@@ -41,7 +43,7 @@ describe("resolvePreset", () => {
   });
 
   test("resolves elixir preset", () => {
-    const result = resolvePreset("elixir");
+    const result = resolvePresetSync("elixir");
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.preset.name).toBe("elixir");
@@ -49,32 +51,116 @@ describe("resolvePreset", () => {
   });
 
   test("is case insensitive", () => {
-    const result = resolvePreset("ZIG");
+    const result = resolvePresetSync("ZIG");
     expect(result.success).toBe(true);
   });
 
   test("returns error for unknown preset", () => {
-    const result = resolvePreset("unknown");
+    const result = resolvePresetSync("unknown");
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toContain("Unknown built-in preset");
+    }
+  });
+});
+
+describe("resolvePreset (async)", () => {
+  test("resolves built-in presets", async () => {
+    const result = await resolvePreset("base");
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.preset.name).toBe("base");
+    }
+  });
+
+  test("is case insensitive", async () => {
+    const result = await resolvePreset("ZIG");
+    expect(result.success).toBe(true);
+  });
+
+  test("returns error for unknown preset", async () => {
+    const result = await resolvePreset("unknown");
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error).toContain("Unknown preset");
     }
   });
 
-  test("returns error for GitHub presets (not yet supported)", () => {
-    const result = resolvePreset("mattneel/some-preset");
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error).toContain("GitHub presets not yet supported");
-    }
-  });
-
-  test("returns error for local presets (not yet supported)", () => {
-    const result = resolvePreset("./local-preset");
+  test("returns error for local presets (not yet supported)", async () => {
+    const result = await resolvePreset("./local-preset");
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error).toContain("Local presets not yet supported");
     }
+  });
+
+  test("returns error for absolute local presets (not yet supported)", async () => {
+    const result = await resolvePreset("/absolute/path");
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toContain("Local presets not yet supported");
+    }
+  });
+
+  test("attempts GitHub resolution for owner/repo format", async () => {
+    // This will fail because the repo doesn't exist, but it should attempt GitHub resolution
+    const result = await resolvePreset("nonexistent-owner/nonexistent-repo");
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      // Should be a GitHub-related error, not "Unknown preset"
+      expect(result.error).toContain("nonexistent-owner/nonexistent-repo");
+    }
+  });
+});
+
+describe("parseGitHubRef", () => {
+  test("parses owner/repo format", () => {
+    const ref = parseGitHubRef("mattneel/rtfct-preset");
+    expect(ref).not.toBeNull();
+    expect(ref!.owner).toBe("mattneel");
+    expect(ref!.repo).toBe("rtfct-preset");
+    expect(ref!.ref).toBe("main");
+  });
+
+  test("parses owner/repo@branch format", () => {
+    const ref = parseGitHubRef("mattneel/rtfct-preset@develop");
+    expect(ref).not.toBeNull();
+    expect(ref!.owner).toBe("mattneel");
+    expect(ref!.repo).toBe("rtfct-preset");
+    expect(ref!.ref).toBe("develop");
+  });
+
+  test("parses owner/repo@tag format", () => {
+    const ref = parseGitHubRef("mattneel/rtfct-preset@v1.0.0");
+    expect(ref).not.toBeNull();
+    expect(ref!.owner).toBe("mattneel");
+    expect(ref!.repo).toBe("rtfct-preset");
+    expect(ref!.ref).toBe("v1.0.0");
+  });
+
+  test("returns null for invalid format (no slash)", () => {
+    const ref = parseGitHubRef("invalid");
+    expect(ref).toBeNull();
+  });
+
+  test("returns null for invalid format (empty owner)", () => {
+    const ref = parseGitHubRef("/repo");
+    expect(ref).toBeNull();
+  });
+
+  test("returns null for invalid format (empty repo)", () => {
+    const ref = parseGitHubRef("owner/");
+    expect(ref).toBeNull();
+  });
+
+  test("returns null for invalid format (empty branch)", () => {
+    const ref = parseGitHubRef("owner/repo@");
+    expect(ref).toBeNull();
+  });
+
+  test("returns null for too many slashes", () => {
+    const ref = parseGitHubRef("owner/repo/extra");
+    expect(ref).toBeNull();
   });
 });
 

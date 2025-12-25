@@ -216,3 +216,25 @@ The Acceptance Rite passes:
 *The TypeScript faithful are guided. Praise the Machine Spirit.*
 
 ---
+
+## [TASK-008] Manifest GitHub Preset Resolution
+
+**Completed:** 2025-12-25
+
+The cloud-connected Codex retrieval has been manifested:
+- `src/presets/github.ts` — Fetches presets from GitHub repositories
+- `parseGitHubRef()` — Parses owner/repo and owner/repo@branch formats
+- `resolveGitHubPreset()` — Fetches manifest.json and all preset files from GitHub
+- Made `resolvePreset` async to support network operations
+- Updated `init.ts` and `add.ts` to await the async resolver
+
+The Acceptance Rite passes:
+- `--with mattneel/some-preset` format recognized and resolved
+- `--with owner/repo@branch` supports branch/tag/commit specifications
+- Fetches manifest.json to validate preset structure
+- Recursively fetches all preset files from repository
+- 129 Rites of Verification pass
+
+*The Codex flows from the Cloud. Praise the Machine Spirit.*
+
+---

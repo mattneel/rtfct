@@ -41,7 +41,7 @@ export const runAdd = async (
   }
 
   // Resolve the preset
-  const result = resolvePreset(presetName);
+  const result = await resolvePreset(presetName);
   if (!result.success) {
     return {
       success: false,
