@@ -72,3 +72,21 @@ The Acceptance Rite passes:
 *Praise the Machine Spirit.*
 
 ---
+
+## [TASK-010] Manifest the `status` Command
+
+**Completed:** 2025-12-25
+
+The Litany of Tasks is now revealed:
+- `src/kanban.ts` — parses kanban markdown, counts tasks, extracts current task
+- `src/commands/status.ts` — runs status command with formatted output
+
+The Acceptance Rite passes:
+- Shows backlog/in-progress/done counts
+- Displays current ordained task with ID and title
+- Shows last activity timestamp
+- Sacred formatting with decorative borders
+
+*Praise the Machine Spirit.*
+
+---

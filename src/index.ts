@@ -12,6 +12,7 @@
 import { parseArgs } from "./args";
 import { printHelp, printVersion, printError } from "./help";
 import { runInit } from "./commands/init";
+import { runStatus, formatStatus } from "./commands/status";
 
 const main = async (): Promise<void> => {
   const args = process.argv.slice(2);
@@ -55,9 +56,15 @@ const main = async (): Promise<void> => {
       console.log(`The add command awaits manifestation. Preset: ${parsed.args[0]}`);
       break;
 
-    case "status":
-      console.log("The status command awaits manifestation.");
+    case "status": {
+      const result = await runStatus(process.cwd());
+      if (!result.success) {
+        printError(result.error!);
+        process.exit(1);
+      }
+      console.log(formatStatus(result.data!));
       break;
+    }
 
     case "regenerate":
       console.log("The regenerate command awaits manifestation.");

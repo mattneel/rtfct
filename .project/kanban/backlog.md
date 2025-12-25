@@ -44,14 +44,6 @@ Enable adding presets to existing consecrated projects.
 
 ---
 
-## [TASK-010] Manifest the `status` Command
-
-Parse kanban markdown and reveal the state of the Litany.
-
-**Acceptance Rite:** Shows backlog/in-progress/done counts, current ordained task, last activity timestamp.
-
----
-
 ## [TASK-011] Manifest the `regenerate` Command
 
 Implement safe purification of generated paths.
