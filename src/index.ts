@@ -14,6 +14,7 @@ import { printHelp, printVersion, printError } from "./help";
 import { runInit } from "./commands/init";
 import { runStatus, formatStatus } from "./commands/status";
 import { runPraise } from "./commands/praise";
+import { runRegenerate, formatRegenerate } from "./commands/regenerate";
 
 const main = async (): Promise<void> => {
   const args = process.argv.slice(2);
@@ -67,9 +68,22 @@ const main = async (): Promise<void> => {
       break;
     }
 
-    case "regenerate":
-      console.log("The regenerate command awaits manifestation.");
+    case "regenerate": {
+      // Check for confirmation flag
+      if (!parsed.flags.yes) {
+        console.log("Are you certain? This will purify all generated code.");
+        console.log("Run with --yes or -y to confirm.");
+        process.exit(1);
+      }
+
+      const result = await runRegenerate(process.cwd(), parsed.flags);
+      if (!result.success) {
+        printError(result.error!);
+        process.exit(1);
+      }
+      console.log(formatRegenerate(result.purifiedPaths || []));
       break;
+    }
 
     case "praise":
       runPraise();

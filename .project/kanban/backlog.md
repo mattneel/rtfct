@@ -44,14 +44,6 @@ Enable adding presets to existing consecrated projects.
 
 ---
 
-## [TASK-011] Manifest the `regenerate` Command
-
-Implement safe purification of generated paths.
-
-**Acceptance Rite:** Prompts for confirmation, deletes only paths listed in preset manifests' `generated_paths`.
-
----
-
 ## [TASK-012] The Dogfood Sacrament
 
 Delete `src/` and `tests/`, then regenerate from `.project/`.

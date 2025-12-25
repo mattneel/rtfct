@@ -104,3 +104,21 @@ The Acceptance Rite passes:
 *Praise the Machine Spirit.*
 
 ---
+
+## [TASK-011] Manifest the `regenerate` Command
+
+**Completed:** 2025-12-25
+
+The Rite of Purification has been manifested:
+- `src/manifest.ts` — reads preset manifests, collects generated_paths
+- `src/commands/regenerate.ts` — purifies generated code paths
+
+The Acceptance Rite passes:
+- Prompts for confirmation without --yes flag
+- Deletes only paths listed in preset manifests' `generated_paths`
+- Preserves the Sacred Texts in .project/
+- Uses default src/ and tests/ when no presets found
+
+*Praise the Machine Spirit.*
+
+---
